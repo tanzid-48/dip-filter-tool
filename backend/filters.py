@@ -70,3 +70,24 @@ def recommend_filter(image):
 def image_to_base64(image):
     _, buffer = cv2.imencode(".jpg", cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
     return base64.b64encode(buffer).decode("utf-8")
+
+
+def add_gaussian_noise(image, mean=0, sigma=25):
+    gauss = np.random.normal(mean, sigma, image.shape).astype(np.float32)
+    noisy = image.astype(np.float32) + gauss
+    noisy = np.clip(noisy, 0, 255).astype(np.uint8)
+    return noisy
+
+
+def add_salt_pepper_noise(image, amount=0.02):
+    noisy = image.copy()
+    num_salt = int(amount * image.size * 0.5)
+    num_pepper = int(amount * image.size * 0.5)
+
+    coords = [np.random.randint(0, i, num_salt) for i in image.shape[:2]]
+    noisy[coords[0], coords[1]] = 255
+
+    coords = [np.random.randint(0, i, num_pepper) for i in image.shape[:2]]
+    noisy[coords[0], coords[1]] = 0
+
+    return noisy
