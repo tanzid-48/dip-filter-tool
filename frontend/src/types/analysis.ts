@@ -4,6 +4,13 @@ export interface PsnrResult {
   gaussian: number;
 }
 
+export interface ImagesResult {
+  original: string;
+  mean: string;
+  median: string;
+  gaussian: string;
+}
+
 export interface RecommendationResult {
   recommendation: string;
   noise_score: number;
@@ -12,6 +19,7 @@ export interface RecommendationResult {
 }
 
 export interface AnalysisResponse {
+  images: ImagesResult;
   psnr: PsnrResult;
   recommendation: RecommendationResult;
 }

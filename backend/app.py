@@ -8,6 +8,7 @@ from filters import (
     apply_gaussian_filter,
     calculate_psnr,
     recommend_filter,
+    image_to_base64,
 )
 
 app = Flask(__name__)
@@ -33,6 +34,12 @@ def analyze_image():
     recommendation = recommend_filter(img_rgb)
 
     response = {
+        "images": {
+            "original": image_to_base64(img_rgb),
+            "mean": image_to_base64(mean_result),
+            "median": image_to_base64(median_result),
+            "gaussian": image_to_base64(gaussian_result),
+        },
         "psnr": {
             "mean": round(calculate_psnr(img_rgb, mean_result), 2),
             "median": round(calculate_psnr(img_rgb, median_result), 2),

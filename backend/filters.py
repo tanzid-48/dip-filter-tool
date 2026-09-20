@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import base64
 
 
 def apply_mean_filter(image):
@@ -64,3 +65,8 @@ def recommend_filter(image):
         "noise_type": noise_type,
         "blur_score": round(blur_level, 2),
     }
+
+
+def image_to_base64(image):
+    _, buffer = cv2.imencode(".jpg", cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
+    return base64.b64encode(buffer).decode("utf-8")

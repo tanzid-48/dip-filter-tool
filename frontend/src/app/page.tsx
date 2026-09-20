@@ -73,11 +73,70 @@ export default function Home() {
       </Card>
 
       {result && (
-        <Card className="w-full max-w-md">
-          <CardContent className="p-6">
-            <pre className="text-sm">{JSON.stringify(result, null, 2)}</pre>
-          </CardContent>
-        </Card>
+        <div className="w-full max-w-4xl flex flex-col gap-6">
+          <Card className="p-6">
+            <h2 className="font-semibold mb-2">Recommendation</h2>
+            <p>{result.recommendation.recommendation}</p>
+            <p className="text-sm text-gray-500">
+              Noise Type: {result.recommendation.noise_type} | Noise Score:{" "}
+              {result.recommendation.noise_score} | Blur Score:{" "}
+              {result.recommendation.blur_score}
+            </p>
+          </Card>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div>
+              <p className="text-center font-medium mb-1">Original</p>
+              <Image
+                src={`data:image/jpeg;base64,${result.images.original}`}
+                alt="Original"
+                width={300}
+                height={300}
+                unoptimized
+                className="w-full h-auto rounded-lg border"
+              />
+            </div>
+            <div>
+              <p className="text-center font-medium mb-1">
+                Mean (PSNR: {result.psnr.mean})
+              </p>
+              <Image
+                src={`data:image/jpeg;base64,${result.images.mean}`}
+                alt="Mean Filter"
+                width={300}
+                height={300}
+                unoptimized
+                className="w-full h-auto rounded-lg border"
+              />
+            </div>
+            <div>
+              <p className="text-center font-medium mb-1">
+                Median (PSNR: {result.psnr.median})
+              </p>
+              <Image
+                src={`data:image/jpeg;base64,${result.images.median}`}
+                alt="Median Filter"
+                width={300}
+                height={300}
+                unoptimized
+                className="w-full h-auto rounded-lg border"
+              />
+            </div>
+            <div>
+              <p className="text-center font-medium mb-1">
+                Gaussian (PSNR: {result.psnr.gaussian})
+              </p>
+              <Image
+                src={`data:image/jpeg;base64,${result.images.gaussian}`}
+                alt="Gaussian Filter"
+                width={300}
+                height={300}
+                unoptimized
+                className="w-full h-auto rounded-lg border"
+              />
+            </div>
+          </div>
+        </div>
       )}
     </main>
   );
