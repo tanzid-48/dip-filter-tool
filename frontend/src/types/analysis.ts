@@ -6,6 +6,7 @@ export interface PsnrResult {
 
 export interface ImagesResult {
   original: string;
+  corrupted: string;
   mean: string;
   median: string;
   gaussian: string;

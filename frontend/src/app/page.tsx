@@ -4,11 +4,19 @@ import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { AnalysisResponse } from "@/types/analysis";
 
 export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [noiseType, setNoiseType] = useState<string>("none");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AnalysisResponse | null>(null);
 
@@ -27,6 +35,7 @@ export default function Home() {
     setLoading(true);
     const formData = new FormData();
     formData.append("image", selectedFile);
+    formData.append("noise_type", noiseType);
 
     try {
       const response = await fetch("http://127.0.0.1:5000/analyze", {
@@ -66,6 +75,17 @@ export default function Home() {
             </div>
           )}
 
+          <Select value={noiseType} onValueChange={setNoiseType}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select noise type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">No Noise (Original)</SelectItem>
+              <SelectItem value="gaussian">Gaussian Noise</SelectItem>
+              <SelectItem value="salt_pepper">Salt & Pepper Noise</SelectItem>
+            </SelectContent>
+          </Select>
+
           <Button onClick={handleAnalyze} disabled={!selectedFile || loading}>
             {loading ? "Analyzing..." : "Analyze Image"}
           </Button>
@@ -73,7 +93,7 @@ export default function Home() {
       </Card>
 
       {result && (
-        <div className="w-full max-w-4xl flex flex-col gap-6">
+        <div className="w-full max-w-5xl flex flex-col gap-6">
           <Card className="p-6">
             <h2 className="font-semibold mb-2">Recommendation</h2>
             <p>{result.recommendation.recommendation}</p>
@@ -84,12 +104,23 @@ export default function Home() {
             </p>
           </Card>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             <div>
               <p className="text-center font-medium mb-1">Original</p>
               <Image
                 src={`data:image/jpeg;base64,${result.images.original}`}
                 alt="Original"
+                width={300}
+                height={300}
+                unoptimized
+                className="w-full h-auto rounded-lg border"
+              />
+            </div>
+            <div>
+              <p className="text-center font-medium mb-1">Corrupted</p>
+              <Image
+                src={`data:image/jpeg;base64,${result.images.corrupted}`}
+                alt="Corrupted"
                 width={300}
                 height={300}
                 unoptimized
