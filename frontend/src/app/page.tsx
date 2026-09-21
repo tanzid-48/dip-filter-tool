@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -51,6 +52,18 @@ export default function Home() {
     }
   };
 
+  const getBestFilter = () => {
+    if (!result) return null;
+    const scores = {
+      mean: result.psnr.mean,
+      median: result.psnr.median,
+      gaussian: result.psnr.gaussian,
+    };
+    return Object.entries(scores).reduce((best, current) =>
+      current[1] > best[1] ? current : best,
+    )[0];
+  };
+
   return (
     <main className="min-h-screen p-8 flex flex-col items-center gap-6">
       <h1 className="text-3xl font-bold">Image Filter Comparison Tool</h1>
@@ -75,7 +88,12 @@ export default function Home() {
             </div>
           )}
 
-          <Select value={noiseType} onValueChange={setNoiseType}>
+          <Select
+            value={noiseType}
+            onValueChange={(value) => {
+              if (value) setNoiseType(value);
+            }}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select noise type" />
             </SelectTrigger>
@@ -116,6 +134,7 @@ export default function Home() {
                 className="w-full h-auto rounded-lg border"
               />
             </div>
+
             <div>
               <p className="text-center font-medium mb-1">Corrupted</p>
               <Image
@@ -127,10 +146,12 @@ export default function Home() {
                 className="w-full h-auto rounded-lg border"
               />
             </div>
+
             <div>
-              <p className="text-center font-medium mb-1">
-                Mean (PSNR: {result.psnr.mean})
-              </p>
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <p className="font-medium">Mean (PSNR: {result.psnr.mean})</p>
+                {getBestFilter() === "mean" && <Badge>Best</Badge>}
+              </div>
               <Image
                 src={`data:image/jpeg;base64,${result.images.mean}`}
                 alt="Mean Filter"
@@ -140,10 +161,14 @@ export default function Home() {
                 className="w-full h-auto rounded-lg border"
               />
             </div>
+
             <div>
-              <p className="text-center font-medium mb-1">
-                Median (PSNR: {result.psnr.median})
-              </p>
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <p className="font-medium">
+                  Median (PSNR: {result.psnr.median})
+                </p>
+                {getBestFilter() === "median" && <Badge>Best</Badge>}
+              </div>
               <Image
                 src={`data:image/jpeg;base64,${result.images.median}`}
                 alt="Median Filter"
@@ -153,10 +178,14 @@ export default function Home() {
                 className="w-full h-auto rounded-lg border"
               />
             </div>
+
             <div>
-              <p className="text-center font-medium mb-1">
-                Gaussian (PSNR: {result.psnr.gaussian})
-              </p>
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <p className="font-medium">
+                  Gaussian (PSNR: {result.psnr.gaussian})
+                </p>
+                {getBestFilter() === "gaussian" && <Badge>Best</Badge>}
+              </div>
               <Image
                 src={`data:image/jpeg;base64,${result.images.gaussian}`}
                 alt="Gaussian Filter"
