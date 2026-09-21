@@ -91,3 +91,18 @@ def add_salt_pepper_noise(image, amount=0.02):
     noisy[coords[0], coords[1]] = 0
 
     return noisy
+
+
+def apply_laplacian_filter(image):
+    gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+    laplacian = cv2.Laplacian(gray, cv2.CV_64F)
+    laplacian_abs = np.uint8(np.absolute(laplacian))
+
+    sharpened = cv2.addWeighted(
+        cv2.cvtColor(gray, cv2.COLOR_GRAY2RGB),
+        1.5,
+        cv2.cvtColor(laplacian_abs, cv2.COLOR_GRAY2RGB),
+        -0.5,
+        0,
+    )
+    return sharpened

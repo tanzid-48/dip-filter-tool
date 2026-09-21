@@ -6,6 +6,7 @@ from filters import (
     apply_mean_filter,
     apply_median_filter,
     apply_gaussian_filter,
+    apply_laplacian_filter,
     calculate_psnr,
     recommend_filter,
     image_to_base64,
@@ -41,6 +42,7 @@ def analyze_image():
     mean_result = apply_mean_filter(working_image)
     median_result = apply_median_filter(working_image)
     gaussian_result = apply_gaussian_filter(working_image)
+    laplacian_result = apply_laplacian_filter(working_image)
 
     recommendation = recommend_filter(working_image)
 
@@ -51,11 +53,13 @@ def analyze_image():
             "mean": image_to_base64(mean_result),
             "median": image_to_base64(median_result),
             "gaussian": image_to_base64(gaussian_result),
+            "laplacian": image_to_base64(laplacian_result),
         },
         "psnr": {
             "mean": round(calculate_psnr(img_rgb, mean_result), 2),
             "median": round(calculate_psnr(img_rgb, median_result), 2),
             "gaussian": round(calculate_psnr(img_rgb, gaussian_result), 2),
+            "laplacian": round(calculate_psnr(img_rgb, laplacian_result), 2),
         },
         "recommendation": recommendation,
     }
