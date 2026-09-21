@@ -2,6 +2,7 @@ export interface PsnrResult {
   mean: number;
   median: number;
   gaussian: number;
+  laplacian: number;
 }
 
 export interface ImagesResult {
@@ -10,6 +11,7 @@ export interface ImagesResult {
   mean: string;
   median: string;
   gaussian: string;
+  laplacian: string;
 }
 
 export interface RecommendationResult {

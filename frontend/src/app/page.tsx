@@ -24,6 +24,7 @@ import {
   Layers,
   ListFilter,
   Waves,
+  Zap,
 } from "lucide-react";
 
 const FILTER_META = {
@@ -44,6 +45,12 @@ const FILTER_META = {
     icon: Waves,
     color: "text-teal-600",
     bg: "bg-teal-50",
+  },
+  laplacian: {
+    label: "Laplacian Filter",
+    icon: Zap,
+    color: "text-rose-600",
+    bg: "bg-rose-50",
   },
 };
 
@@ -102,6 +109,11 @@ export default function Home() {
           psnr: result.psnr.gaussian,
           image: result.images.gaussian,
         },
+        {
+          key: "laplacian" as const,
+          psnr: result.psnr.laplacian,
+          image: result.images.laplacian,
+        },
       ]
     : [];
 
@@ -151,6 +163,7 @@ export default function Home() {
               className="hidden"
             />
           </label>
+
           {previewUrl && (
             <div className="relative w-full aspect-square rounded-xl border border-slate-200 overflow-hidden bg-slate-50">
               <Image
@@ -280,7 +293,7 @@ export default function Home() {
               <p className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">
                 Filtered Results
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 {filterCards.map((filter, index) => {
                   const meta = FILTER_META[filter.key];
                   const Icon = meta.icon;
