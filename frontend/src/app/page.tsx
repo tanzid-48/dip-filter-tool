@@ -21,7 +21,7 @@ function GrainSquare({ variant }: { variant: "clean" | "noisy" | "restored" }) {
           />
         </filter>
       </defs>
-      <rect width="100" height="100" fill="#DCD3C0" />
+      <rect width="100" height="100" fill="var(--lab-hairline)" />
       {variant !== "clean" && (
         <rect
           width="100"
@@ -35,7 +35,7 @@ function GrainSquare({ variant }: { variant: "clean" | "noisy" | "restored" }) {
           width="100"
           height="100"
           fill="none"
-          stroke="#3F7D5C"
+          stroke="var(--lab-good)"
           strokeWidth="3"
         />
       )}
@@ -45,10 +45,9 @@ function GrainSquare({ variant }: { variant: "clean" | "noisy" | "restored" }) {
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-[#F5F1EA] text-[#211C16] px-4 py-20 flex flex-col items-center gap-16">
-      {/* Hero */}
+    <main className="min-h-screen bg-[var(--lab-bg)] text-[var(--lab-ink)] px-4 py-20 flex flex-col items-center gap-16">
       <div className="w-full max-w-2xl flex flex-col items-center gap-8 text-center">
-        <span className="font-mono text-xs text-[#7C7364]">
+        <span className="font-mono text-xs text-[var(--lab-muted)]">
           CSE 4206 · Digital Image Processing
         </span>
 
@@ -58,64 +57,61 @@ export default function HomePage() {
           into a clean one.
         </h1>
 
-        {/* Fanned proof strip */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="relative h-32 w-full max-w-xs flex items-center justify-center"
         >
-          <div className="absolute w-20 h-20 -rotate-6 border border-[#E4DED2] bg-white p-1.5 shadow-[0_10px_24px_-8px_rgba(33,28,22,0.3)]">
+          <div className="absolute w-20 h-20 -rotate-6 border border-[var(--lab-hairline)] bg-[var(--lab-surface)] p-1.5 shadow-[0_10px_24px_-8px_rgba(0,0,0,0.3)]">
             <GrainSquare variant="clean" />
-            <span className="absolute -bottom-5 left-0 font-mono text-[10px] text-[#7C7364]">
+            <span className="absolute -bottom-5 left-0 font-mono text-[10px] text-[var(--lab-muted)]">
               source
             </span>
           </div>
-          <div className="absolute w-20 h-20 border border-[#E4DED2] bg-white p-1.5 shadow-[0_10px_24px_-8px_rgba(33,28,22,0.35)] z-10">
+          <div className="absolute w-20 h-20 border border-[var(--lab-hairline)] bg-[var(--lab-surface)] p-1.5 shadow-[0_10px_24px_-8px_rgba(0,0,0,0.35)] z-10">
             <GrainSquare variant="noisy" />
-            <span className="absolute -bottom-5 left-0 font-mono text-[10px] text-[#7C7364]">
+            <span className="absolute -bottom-5 left-0 font-mono text-[10px] text-[var(--lab-muted)]">
               degraded
             </span>
           </div>
-          <div className="absolute w-20 h-20 rotate-6 border border-[#3F7D5C] bg-white p-1.5 shadow-[0_10px_24px_-8px_rgba(33,28,22,0.3)] translate-x-16">
+          <div className="absolute w-20 h-20 rotate-6 border border-[var(--lab-good)] bg-[var(--lab-surface)] p-1.5 shadow-[0_10px_24px_-8px_rgba(0,0,0,0.3)] translate-x-16">
             <GrainSquare variant="restored" />
-            <span className="absolute -bottom-5 left-0 font-mono text-[10px] text-[#3F7D5C]">
+            <span className="absolute -bottom-5 left-0 font-mono text-[10px] text-[var(--lab-good)]">
               restored
             </span>
           </div>
         </motion.div>
 
-        <p className="text-sm text-[#7C7364] leading-relaxed max-w-md pt-4">
+        <p className="text-sm text-[var(--lab-muted)] leading-relaxed max-w-md pt-4">
           Upload a photo, add noise on purpose, and watch four filters race to
           clean it up — scored and ranked by real PSNR.
         </p>
       </div>
 
-      {/* Stats */}
-      <div className="w-full max-w-md grid grid-cols-3 border-y border-[#211C16] py-5">
-        <div className="flex flex-col items-center gap-1 border-r border-[#E4DED2]">
+      <div className="w-full max-w-md grid grid-cols-3 border-y border-[var(--lab-ink)] py-5">
+        <div className="flex flex-col items-center gap-1 border-r border-[var(--lab-hairline)]">
           <span className="font-mono text-3xl font-bold">04</span>
-          <span className="text-xs text-[#7C7364]">filters</span>
+          <span className="text-xs text-[var(--lab-muted)]">filters</span>
         </div>
-        <div className="flex flex-col items-center gap-1 border-r border-[#E4DED2]">
+        <div className="flex flex-col items-center gap-1 border-r border-[var(--lab-hairline)]">
           <span className="font-mono text-3xl font-bold">02</span>
-          <span className="text-xs text-[#7C7364]">noise types</span>
+          <span className="text-xs text-[var(--lab-muted)]">noise types</span>
         </div>
         <div className="flex flex-col items-center gap-1">
           <span className="font-mono text-3xl font-bold">dB</span>
-          <span className="text-xs text-[#7C7364]">PSNR scored</span>
+          <span className="text-xs text-[var(--lab-muted)]">PSNR scored</span>
         </div>
       </div>
 
-      {/* Paths */}
       <div className="w-full max-w-2xl grid grid-cols-1 sm:grid-cols-2 gap-6">
         <Link
           href="/bench"
-          className="group bg-white border border-[#E4DED2] p-7 flex flex-col gap-3 hover:border-[#211C16] transition-colors shadow-[0_6px_20px_-6px_rgba(33,28,22,0.15)]"
+          className="group bg-[var(--lab-surface)] border border-[var(--lab-hairline)] p-7 flex flex-col gap-3 hover:border-[var(--lab-ink)] transition-colors shadow-[0_6px_20px_-6px_rgba(0,0,0,0.15)]"
         >
-          <span className="font-mono text-xs text-[#7C7364]">01</span>
+          <span className="font-mono text-xs text-[var(--lab-muted)]">01</span>
           <span className="text-xl font-medium">Filter bench</span>
-          <span className="text-sm text-[#7C7364] leading-relaxed">
+          <span className="text-sm text-[var(--lab-muted)] leading-relaxed">
             Upload a photo, add noise on purpose, and run it through Mean,
             Median, Gaussian, and Laplacian filters.
           </span>
@@ -126,11 +122,11 @@ export default function HomePage() {
 
         <Link
           href="/filters"
-          className="group bg-white border border-[#E4DED2] p-7 flex flex-col gap-3 hover:border-[#211C16] transition-colors shadow-[0_6px_20px_-6px_rgba(33,28,22,0.15)]"
+          className="group bg-[var(--lab-surface)] border border-[var(--lab-hairline)] p-7 flex flex-col gap-3 hover:border-[var(--lab-ink)] transition-colors shadow-[0_6px_20px_-6px_rgba(0,0,0,0.15)]"
         >
-          <span className="font-mono text-xs text-[#7C7364]">02</span>
+          <span className="font-mono text-xs text-[var(--lab-muted)]">02</span>
           <span className="text-xl font-medium">Filter library</span>
-          <span className="text-sm text-[#7C7364] leading-relaxed">
+          <span className="text-sm text-[var(--lab-muted)] leading-relaxed">
             Read the theory, kernel, formula, and exam-style answers for every
             filter used in the bench.
           </span>

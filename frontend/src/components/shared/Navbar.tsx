@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { useTheme } from "next-themes";
+import { Menu, X, Sun, Moon } from "lucide-react";
 
 const NAV_LINKS = [
   { href: "/bench", label: "Bench" },
@@ -24,25 +25,32 @@ function GithubIcon({ className }: { className?: string }) {
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const { resolvedTheme, setTheme } = useTheme();
+
+  useEffect(() => setMounted(true), []);
+
+  const toggleTheme = () => {
+    setTheme(resolvedTheme === "dark" ? "light" : "dark");
+  };
 
   return (
-    <nav className="w-full border-b border-[#E4DED2] bg-[#F5F1EA]">
+    <nav className="w-full border-b border-[var(--lab-hairline)] bg-[var(--lab-bg)]">
       <div className="max-w-5xl mx-auto px-4 flex items-center justify-between h-14">
         <Link
           href="/"
-          className="font-semibold tracking-tight text-[#211C16]"
+          className="font-semibold tracking-tight text-[var(--lab-ink)]"
           onClick={() => setIsOpen(false)}
         >
           DIP Filter Lab
         </Link>
 
-        {/* Desktop links */}
         <div className="hidden sm:flex items-center gap-6">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm text-[#7C7364] hover:text-[#211C16] transition-colors"
+              className="text-sm text-[var(--lab-muted)] hover:text-[var(--lab-ink)] transition-colors"
             >
               {link.label}
             </Link>
@@ -52,31 +60,57 @@ export default function Navbar() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="View source on GitHub"
-            className="text-[#7C7364] hover:text-[#211C16] transition-colors"
+            className="text-[var(--lab-muted)] hover:text-[var(--lab-ink)] transition-colors"
           >
             <GithubIcon className="h-4.5 w-4.5" />
           </a>
+          {mounted && (
+            <button
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
+              className="text-[var(--lab-muted)] hover:text-[var(--lab-ink)] transition-colors"
+            >
+              {resolvedTheme === "dark" ? (
+                <Sun className="h-4.5 w-4.5" />
+              ) : (
+                <Moon className="h-4.5 w-4.5" />
+              )}
+            </button>
+          )}
         </div>
 
-        {/* Mobile toggle */}
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          aria-label={isOpen ? "Close menu" : "Open menu"}
-          className="sm:hidden text-[#211C16]"
-        >
-          {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+        <div className="flex items-center gap-3 sm:hidden">
+          {mounted && (
+            <button
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
+              className="text-[var(--lab-ink)]"
+            >
+              {resolvedTheme === "dark" ? (
+                <Sun className="h-5 w-5" />
+              ) : (
+                <Moon className="h-5 w-5" />
+              )}
+            </button>
+          )}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label={isOpen ? "Close menu" : "Open menu"}
+            className="text-[var(--lab-ink)]"
+          >
+            {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </div>
 
-      {/* Mobile menu */}
       {isOpen && (
-        <div className="sm:hidden border-t border-[#E4DED2] px-4 py-4 flex flex-col gap-4">
+        <div className="sm:hidden border-t border-[var(--lab-hairline)] px-4 py-4 flex flex-col gap-4">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setIsOpen(false)}
-              className="text-sm text-[#211C16]"
+              className="text-sm text-[var(--lab-ink)]"
             >
               {link.label}
             </Link>
@@ -85,7 +119,7 @@ export default function Navbar() {
             href="https://github.com/tanzid-48/dip-filter-tool"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 text-sm text-[#211C16]"
+            className="flex items-center gap-2 text-sm text-[var(--lab-ink)]"
           >
             <GithubIcon className="h-4 w-4" />
             GitHub

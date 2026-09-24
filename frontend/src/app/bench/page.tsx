@@ -22,7 +22,7 @@ const FILTER_LABEL: Record<FilterKey, string> = {
   laplacian: "Laplacian",
 };
 
-const PRINT_SHADOW = "shadow-[0_6px_20px_-6px_rgba(33,28,22,0.22)]";
+const PRINT_SHADOW = "shadow-[0_6px_20px_-6px_rgba(0,0,0,0.22)]";
 
 export default function BenchPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -94,36 +94,36 @@ export default function BenchPage() {
     result?.recommendation.recommendation.includes("No major issues");
 
   return (
-    <main className="min-h-screen bg-[#F5F1EA] text-[#211C16] px-4 py-20 flex flex-col items-center gap-14 font-sans">
-      {/* Masthead */}
+    <main className="min-h-screen bg-[var(--lab-bg)] text-[var(--lab-ink)] px-4 py-20 flex flex-col items-center gap-14 font-sans">
       <div className="w-full max-w-md flex flex-col gap-2">
-        <div className="flex items-baseline justify-between border-b-2 border-[#211C16] pb-2">
+        <div className="flex items-baseline justify-between border-b-2 border-[var(--lab-ink)] pb-2">
           <h1 className="text-2xl font-semibold tracking-tight">
             Filter bench
           </h1>
-          <span className="font-mono text-xs text-[#7C7364]">CSE 4206 lab</span>
+          <span className="font-mono text-xs text-[var(--lab-muted)]">
+            CSE 4206 lab
+          </span>
         </div>
-        <p className="text-sm text-[#7C7364] leading-relaxed">
+        <p className="text-sm text-[var(--lab-muted)] leading-relaxed">
           Drop in a photo, add noise on purpose, and see which filter cleans it
           up best — read the PSNR to know for sure.
         </p>
       </div>
 
-      {/* Control panel */}
       <div
-        className={`w-full max-w-md bg-white border border-[#E4DED2] ${PRINT_SHADOW}`}
+        className={`w-full max-w-md bg-[var(--lab-surface)] border border-[var(--lab-hairline)] ${PRINT_SHADOW}`}
       >
         <div className="p-6 flex flex-col gap-5">
           <label
             htmlFor="file-upload"
-            className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-[#C9BFA9] p-10 cursor-pointer transition-colors hover:border-[#211C16] focus-within:border-[#211C16]"
+            className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-[var(--lab-hairline)] p-10 cursor-pointer transition-colors hover:border-[var(--lab-ink)] focus-within:border-[var(--lab-ink)]"
           >
             <span className="text-sm font-medium">
               {selectedFile
                 ? selectedFile.name
                 : "Drop a photo or click to choose"}
             </span>
-            <span className="text-xs text-[#7C7364]">JPG or PNG</span>
+            <span className="text-xs text-[var(--lab-muted)]">JPG or PNG</span>
             <input
               id="file-upload"
               type="file"
@@ -134,7 +134,7 @@ export default function BenchPage() {
           </label>
 
           {previewUrl && (
-            <div className="relative w-full aspect-square border border-[#E4DED2] overflow-hidden bg-[#F5F1EA]">
+            <div className="relative w-full aspect-square border border-[var(--lab-hairline)] overflow-hidden bg-[var(--lab-bg)]">
               <Image
                 src={previewUrl}
                 alt="Preview"
@@ -146,7 +146,10 @@ export default function BenchPage() {
           )}
 
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="noise-select" className="text-sm text-[#7C7364]">
+            <label
+              htmlFor="noise-select"
+              className="text-sm text-[var(--lab-muted)]"
+            >
               Add noise
             </label>
             <Select
@@ -157,7 +160,7 @@ export default function BenchPage() {
             >
               <SelectTrigger
                 id="noise-select"
-                className="w-full rounded-none border-[#E4DED2] h-11"
+                className="w-full rounded-none border-[var(--lab-hairline)] h-11"
               >
                 <SelectValue placeholder="None" />
               </SelectTrigger>
@@ -172,14 +175,13 @@ export default function BenchPage() {
           <Button
             onClick={handleAnalyze}
             disabled={!selectedFile || loading}
-            className="w-full h-12 rounded-none bg-[#211C16] hover:bg-[#332C22] text-white text-base"
+            className="w-full h-12 rounded-none bg-[var(--lab-ink)] text-[var(--lab-bg)] hover:opacity-85 text-base"
           >
             {loading ? "Running…" : "Run filters"}
           </Button>
         </div>
       </div>
 
-      {/* Results */}
       <AnimatePresence>
         {result && (
           <motion.div
@@ -188,15 +190,14 @@ export default function BenchPage() {
             transition={{ duration: shouldReduceMotion ? 0 : 0.4 }}
             className="w-full max-w-5xl flex flex-col gap-14"
           >
-            {/* Verdict — stamped */}
             <div
-              className={`relative border border-[#E4DED2] bg-white p-7 ${PRINT_SHADOW}`}
+              className={`relative border border-[var(--lab-hairline)] bg-[var(--lab-surface)] p-7 ${PRINT_SHADOW}`}
             >
               <span
-                className={`absolute -top-4 left-7 rotate-[-4deg] border-2 bg-white px-3 py-1 text-xs font-semibold tracking-wide shadow-sm ${
+                className={`absolute -top-4 left-7 rotate-[-4deg] border-2 bg-[var(--lab-surface)] px-3 py-1 text-xs font-semibold tracking-wide shadow-sm ${
                   isGoodQuality
-                    ? "border-[#3F7D5C] text-[#3F7D5C]"
-                    : "border-[#B5502E] text-[#B5502E]"
+                    ? "border-[var(--lab-good)] text-[var(--lab-good)]"
+                    : "border-[var(--lab-bad)] text-[var(--lab-bad)]"
                 }`}
               >
                 {isGoodQuality ? "clean" : "needs cleanup"}
@@ -206,19 +207,25 @@ export default function BenchPage() {
               </p>
               <dl className="mt-5 grid grid-cols-3 gap-6">
                 <div>
-                  <dt className="text-xs text-[#7C7364]">noise type</dt>
+                  <dt className="text-xs text-[var(--lab-muted)]">
+                    noise type
+                  </dt>
                   <dd className="font-mono text-base font-medium">
                     {result.recommendation.noise_type}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-xs text-[#7C7364]">noise score</dt>
+                  <dt className="text-xs text-[var(--lab-muted)]">
+                    noise score
+                  </dt>
                   <dd className="font-mono text-base font-medium">
                     {result.recommendation.noise_score}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-xs text-[#7C7364]">blur score</dt>
+                  <dt className="text-xs text-[var(--lab-muted)]">
+                    blur score
+                  </dt>
                   <dd className="font-mono text-base font-medium">
                     {result.recommendation.blur_score}
                   </dd>
@@ -226,12 +233,11 @@ export default function BenchPage() {
               </dl>
             </div>
 
-            {/* Reference prints */}
             <div>
-              <p className="text-sm text-[#7C7364] mb-4">Input</p>
+              <p className="text-sm text-[var(--lab-muted)] mb-4">Input</p>
               <div className="grid grid-cols-2 gap-6 max-w-md">
                 <div
-                  className={`bg-white p-3 border border-[#E4DED2] ${PRINT_SHADOW}`}
+                  className={`bg-[var(--lab-surface)] p-3 border border-[var(--lab-hairline)] ${PRINT_SHADOW}`}
                 >
                   <Image
                     src={`data:image/jpeg;base64,${result.images.original}`}
@@ -241,12 +247,12 @@ export default function BenchPage() {
                     unoptimized
                     className="w-full h-auto"
                   />
-                  <p className="mt-2 font-mono text-xs text-[#7C7364]">
+                  <p className="mt-2 font-mono text-xs text-[var(--lab-muted)]">
                     01 — source
                   </p>
                 </div>
                 <div
-                  className={`bg-white p-3 border border-[#E4DED2] ${PRINT_SHADOW}`}
+                  className={`bg-[var(--lab-surface)] p-3 border border-[var(--lab-hairline)] ${PRINT_SHADOW}`}
                 >
                   <Image
                     src={`data:image/jpeg;base64,${result.images.corrupted}`}
@@ -256,24 +262,25 @@ export default function BenchPage() {
                     unoptimized
                     className="w-full h-auto"
                   />
-                  <p className="mt-2 font-mono text-xs text-[#7C7364]">
+                  <p className="mt-2 font-mono text-xs text-[var(--lab-muted)]">
                     02 — degraded
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Filter prints */}
             <div>
-              <p className="text-sm text-[#7C7364] mb-4">Filtered</p>
+              <p className="text-sm text-[var(--lab-muted)] mb-4">Filtered</p>
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
                 {filterFrames.map((frame, index) => {
                   const isBest = frame.key === bestKey;
                   return (
                     <div key={frame.key} className="relative">
                       <div
-                        className={`bg-white p-3 border ${PRINT_SHADOW} ${
-                          isBest ? "border-[#3F7D5C]" : "border-[#E4DED2]"
+                        className={`bg-[var(--lab-surface)] p-3 border ${PRINT_SHADOW} ${
+                          isBest
+                            ? "border-[var(--lab-good)]"
+                            : "border-[var(--lab-hairline)]"
                         }`}
                       >
                         <Image
@@ -288,23 +295,25 @@ export default function BenchPage() {
                           <span className="text-sm font-medium">
                             {FILTER_LABEL[frame.key]}
                           </span>
-                          <span className="font-mono text-[10px] text-[#7C7364]">
+                          <span className="font-mono text-[10px] text-[var(--lab-muted)]">
                             {String(index + 3).padStart(2, "0")}
                           </span>
                         </div>
                         <p
                           className={`font-mono text-2xl font-bold ${
-                            isBest ? "text-[#3F7D5C]" : "text-[#211C16]"
+                            isBest
+                              ? "text-[var(--lab-good)]"
+                              : "text-[var(--lab-ink)]"
                           }`}
                         >
                           {frame.psnr}
-                          <span className="text-xs font-normal text-[#7C7364] ml-1">
+                          <span className="text-xs font-normal text-[var(--lab-muted)] ml-1">
                             dB
                           </span>
                         </p>
                       </div>
                       {isBest && (
-                        <span className="absolute -top-3 -right-3 rotate-[8deg] border-2 border-[#3F7D5C] text-[#3F7D5C] bg-white px-2.5 py-1 text-[10px] font-semibold tracking-wide shadow-sm">
+                        <span className="absolute -top-3 -right-3 rotate-[8deg] border-2 border-[var(--lab-good)] text-[var(--lab-good)] bg-[var(--lab-surface)] px-2.5 py-1 text-[10px] font-semibold tracking-wide shadow-sm">
                           selected
                         </span>
                       )}

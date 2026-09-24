@@ -128,3 +128,22 @@
     @apply font-sans;
   }
 }
+:root {
+  --lab-bg: #F5F1EA;
+  --lab-surface: #FFFFFF;
+  --lab-ink: #211C16;
+  --lab-muted: #7C7364;
+  --lab-hairline: #E4DED2;
+  --lab-good: #3F7D5C;
+  --lab-bad: #B5502E;
+}
+
+.dark {
+  --lab-bg: #17140F;
+  --lab-surface: #211C16;
+  --lab-ink: #F5F1EA;
+  --lab-muted: #948A78;
+  --lab-hairline: #3A332A;
+  --lab-good: #5FA37D;
+  --lab-bad: #D97656;
+}
