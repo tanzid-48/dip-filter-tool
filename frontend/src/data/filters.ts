@@ -190,6 +190,49 @@ sharpened = np.uint8(np.absolute(laplacian))`,
       },
     ],
   },
+    {
+    slug: "bilateral",
+    name: "Bilateral Filter",
+    category: "Smoothing",
+    tagline: "Smooths noise while keeping edges sharp.",
+    overview:
+      "Bilateral Filter হলো Gaussian Filter-এর একটা উন্নত ভার্সন — এটা শুধু distance না, বরং pixel value-এর মিলও বিবেচনা করে weight দেয়। ফলে ছবি smooth হয়, কিন্তু edge/boundary তীক্ষ্ণ থেকে যায়, যেটা সাধারণ Gaussian filter করতে পারে না।",
+    howItWorks: [
+      "প্রতিটা প্রতিবেশী pixel-এর জন্য দুইটা weight হিসাব করা হয়: একটা distance-ভিত্তিক (Gaussian-এর মতো), আরেকটা intensity-difference-ভিত্তিক",
+      "দুইটা weight গুণ করে চূড়ান্ত weight পাওয়া যায়",
+      "কাছের এবং একই রকম intensity-র pixel বেশি প্রভাব ফেলে",
+      "দূরের বা ভিন্ন intensity-র pixel (সম্ভবত অন্য পাশের edge) কম প্রভাব ফেলে, তাই edge অক্ষত থাকে",
+    ],
+    kernel: [
+      ["dist × color", "dist × color", "dist × color"],
+      ["dist × color", "center", "dist × color"],
+      ["dist × color", "dist × color", "dist × color"],
+    ],
+    formula:
+      "BF(p) = (1/Wp) × Σ G_spatial(‖p−q‖) × G_range(|I(p)−I(q)|) × I(q)",
+    bestFor: "যেখানে noise কমাতে হবে কিন্তু edge/detail সংরক্ষণ করাও জরুরি",
+    pros: [
+      "Noise কমায় কিন্তু edge sharp রাখে — Gaussian-এর প্রধান দুর্বলতা সমাধান করে",
+      "Portrait/skin-smoothing এর মতো বাস্তব ব্যবহারে জনপ্রিয়",
+      "Non-linear filter হওয়ায় adaptive আচরণ করে",
+    ],
+    cons: [
+      "Mean/Gaussian-এর চেয়ে computationally অনেক বেশি খরচসাপেক্ষ",
+      "দুইটা parameter (sigmaColor, sigmaSpace) ঠিকভাবে টিউন করা লাগে",
+      "Salt & Pepper-এর মতো extreme noise-এ Median-এর মতো কার্যকর না",
+    ],
+    codeSnippet: `bilateral_filtered = cv2.bilateralFilter(image, d=9, sigmaColor=75, sigmaSpace=75)`,
+    examQA: [
+      {
+        question:
+          "How does the Bilateral filter preserve edges better than the Gaussian filter?",
+        bengaliExplanation:
+          "Gaussian filter শুধু distance অনুযায়ী weight দেয়, তাই edge-এর দুই পাশের ভিন্ন intensity-র pixel-ও মিশিয়ে ফেলে (blur করে)। Bilateral filter distance-এর সাথে intensity-এর পার্থক্যও বিবেচনা করে — যদি কোনো প্রতিবেশী pixel-এর intensity কেন্দ্র pixel থেকে অনেক আলাদা হয় (edge-এর ওপাশে), তাকে কম weight দেওয়া হয়, ফলে edge অক্ষত থাকে।",
+        examAnswer:
+          "The Bilateral filter combines a spatial (distance-based) Gaussian weight with a range (intensity-difference-based) Gaussian weight. Pixels that are both spatially close and similar in intensity contribute most, while pixels across an edge — despite being spatially close — have very different intensity and are down-weighted. This prevents smoothing across edges, unlike the standard Gaussian filter.",
+      },
+    ],
+  },
 ];
 
 export function getFilterBySlug(slug: string) {

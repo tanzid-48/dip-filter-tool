@@ -106,3 +106,7 @@ def apply_laplacian_filter(image):
         0,
     )
     return sharpened
+
+
+def apply_bilateral_filter(image):
+    return cv2.bilateralFilter(image, d=9, sigmaColor=75, sigmaSpace=75)

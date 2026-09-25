@@ -13,13 +13,14 @@ import {
 } from "@/components/ui/select";
 import { AnalysisResponse } from "@/types/analysis";
 
-type FilterKey = "mean" | "median" | "gaussian" | "laplacian";
+type FilterKey = "mean" | "median" | "gaussian" | "laplacian" | "bilateral";
 
 const FILTER_LABEL: Record<FilterKey, string> = {
   mean: "Mean",
   median: "Median",
   gaussian: "Gaussian",
   laplacian: "Laplacian",
+  bilateral: "Bilateral",
 };
 
 const PRINT_SHADOW = "shadow-[0_6px_20px_-6px_rgba(0,0,0,0.22)]";
@@ -63,26 +64,15 @@ export default function BenchPage() {
     }
   };
 
-  const filterFrames: { key: FilterKey; psnr: number; image: string }[] = result
-    ? [
-        { key: "mean", psnr: result.psnr.mean, image: result.images.mean },
-        {
-          key: "median",
-          psnr: result.psnr.median,
-          image: result.images.median,
-        },
-        {
-          key: "gaussian",
-          psnr: result.psnr.gaussian,
-          image: result.images.gaussian,
-        },
-        {
-          key: "laplacian",
-          psnr: result.psnr.laplacian,
-          image: result.images.laplacian,
-        },
-      ]
-    : [];
+const filterFrames: { key: FilterKey; psnr: number; image: string }[] = result
+  ? [
+      { key: "mean", psnr: result.psnr.mean, image: result.images.mean },
+      { key: "median", psnr: result.psnr.median, image: result.images.median },
+      { key: "gaussian", psnr: result.psnr.gaussian, image: result.images.gaussian },
+      { key: "laplacian", psnr: result.psnr.laplacian, image: result.images.laplacian },
+      { key: "bilateral", psnr: result.psnr.bilateral, image: result.images.bilateral },
+    ]
+  : [];
 
   const bestKey = filterFrames.length
     ? filterFrames.reduce((best, current) =>
@@ -271,7 +261,7 @@ export default function BenchPage() {
 
             <div>
               <p className="text-sm text-[var(--lab-muted)] mb-4">Filtered</p>
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="grid grid-cols-2 lg:grid-cols-5 gap-8">
                 {filterFrames.map((frame, index) => {
                   const isBest = frame.key === bestKey;
                   return (
