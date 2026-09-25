@@ -8,6 +8,7 @@ import { Menu, X, Sun, Moon } from "lucide-react";
 const NAV_LINKS = [
   { href: "/bench", label: "Bench" },
   { href: "/filters", label: "Library" },
+  { href: "/engine", label: "Engine" },
 ];
 
 function GithubIcon({ className }: { className?: string }) {
