@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import base64
+from skimage.metrics import structural_similarity as ssim
 
 
 def apply_mean_filter(image):
@@ -20,6 +21,13 @@ def calculate_psnr(original, processed):
     if mse == 0:
         return float("inf")
     return 20 * np.log10(255.0 / np.sqrt(mse))
+
+
+def calculate_ssim(original, processed):
+    original_gray = cv2.cvtColor(original, cv2.COLOR_RGB2GRAY)
+    processed_gray = cv2.cvtColor(processed, cv2.COLOR_RGB2GRAY)
+    score, _ = ssim(original_gray, processed_gray, full=True)
+    return score
 
 
 def detect_blur(image):

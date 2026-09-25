@@ -9,6 +9,7 @@ from filters import (
     apply_laplacian_filter,
     apply_bilateral_filter,
     calculate_psnr,
+    calculate_ssim,
     recommend_filter,
     image_to_base64,
     add_gaussian_noise,
@@ -64,6 +65,13 @@ def analyze_image():
             "gaussian": round(calculate_psnr(img_rgb, gaussian_result), 2),
             "laplacian": round(calculate_psnr(img_rgb, laplacian_result), 2),
             "bilateral": round(calculate_psnr(img_rgb, bilateral_result), 2),
+        },
+        "ssim": {
+            "mean": round(calculate_ssim(img_rgb, mean_result), 3),
+            "median": round(calculate_ssim(img_rgb, median_result), 3),
+            "gaussian": round(calculate_ssim(img_rgb, gaussian_result), 3),
+            "laplacian": round(calculate_ssim(img_rgb, laplacian_result), 3),
+            "bilateral": round(calculate_ssim(img_rgb, bilateral_result), 3),
         },
         "recommendation": recommendation,
     }

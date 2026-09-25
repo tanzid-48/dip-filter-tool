@@ -6,6 +6,14 @@ export interface PsnrResult {
   bilateral: number;
 }
 
+export interface SsimResult {
+  mean: number;
+  median: number;
+  gaussian: number;
+  laplacian: number;
+  bilateral: number;
+}
+
 export interface ImagesResult {
   original: string;
   corrupted: string;
@@ -26,5 +34,6 @@ export interface RecommendationResult {
 export interface AnalysisResponse {
   images: ImagesResult;
   psnr: PsnrResult;
+  ssim: SsimResult;
   recommendation: RecommendationResult;
 }

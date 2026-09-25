@@ -64,15 +64,45 @@ export default function BenchPage() {
     }
   };
 
-const filterFrames: { key: FilterKey; psnr: number; image: string }[] = result
-  ? [
-      { key: "mean", psnr: result.psnr.mean, image: result.images.mean },
-      { key: "median", psnr: result.psnr.median, image: result.images.median },
-      { key: "gaussian", psnr: result.psnr.gaussian, image: result.images.gaussian },
-      { key: "laplacian", psnr: result.psnr.laplacian, image: result.images.laplacian },
-      { key: "bilateral", psnr: result.psnr.bilateral, image: result.images.bilateral },
-    ]
-  : [];
+  const filterFrames: {
+    key: FilterKey;
+    psnr: number;
+    ssim: number;
+    image: string;
+  }[] = result
+    ? [
+        {
+          key: "mean",
+          psnr: result.psnr.mean,
+          ssim: result.ssim.mean,
+          image: result.images.mean,
+        },
+        {
+          key: "median",
+          psnr: result.psnr.median,
+          ssim: result.ssim.median,
+          image: result.images.median,
+        },
+        {
+          key: "gaussian",
+          psnr: result.psnr.gaussian,
+          ssim: result.ssim.gaussian,
+          image: result.images.gaussian,
+        },
+        {
+          key: "laplacian",
+          psnr: result.psnr.laplacian,
+          ssim: result.ssim.laplacian,
+          image: result.images.laplacian,
+        },
+        {
+          key: "bilateral",
+          psnr: result.psnr.bilateral,
+          ssim: result.ssim.bilateral,
+          image: result.images.bilateral,
+        },
+      ]
+    : [];
 
   const bestKey = filterFrames.length
     ? filterFrames.reduce((best, current) =>
@@ -300,6 +330,9 @@ const filterFrames: { key: FilterKey; psnr: number; image: string }[] = result
                           <span className="text-xs font-normal text-[var(--lab-muted)] ml-1">
                             dB
                           </span>
+                        </p>
+                        <p className="font-mono text-xs text-[var(--lab-muted)]">
+                          SSIM {frame.ssim}
                         </p>
                       </div>
                       {isBest && (
