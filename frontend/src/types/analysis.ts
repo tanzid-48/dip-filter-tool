@@ -37,3 +37,6 @@ export interface AnalysisResponse {
   ssim: SsimResult;
   recommendation: RecommendationResult;
 }
+export interface ExplainResponse {
+  explanation: string;
+}

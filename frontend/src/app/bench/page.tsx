@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { AnalysisResponse } from "@/types/analysis";
+import { AnalysisResponse, ExplainResponse } from "@/types/analysis";
 
 type FilterKey = "mean" | "median" | "gaussian" | "laplacian" | "bilateral";
 
@@ -31,6 +31,8 @@ export default function BenchPage() {
   const [noiseType, setNoiseType] = useState<string>("none");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AnalysisResponse | null>(null);
+  const [explanation, setExplanation] = useState<string | null>(null);
+  const [explainLoading, setExplainLoading] = useState(false);
   const shouldReduceMotion = useReducedMotion();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,6 +41,7 @@ export default function BenchPage() {
       setSelectedFile(file);
       setPreviewUrl(URL.createObjectURL(file));
       setResult(null);
+      setExplanation(null);
     }
   };
 
@@ -46,6 +49,7 @@ export default function BenchPage() {
     if (!selectedFile) return;
 
     setLoading(true);
+    setExplanation(null);
     const formData = new FormData();
     formData.append("image", selectedFile);
     formData.append("noise_type", noiseType);
@@ -61,6 +65,29 @@ export default function BenchPage() {
       console.error("Analysis failed:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleExplain = async () => {
+    if (!result) return;
+
+    setExplainLoading(true);
+    try {
+      const response = await fetch("http://127.0.0.1:5000/explain", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          recommendation: result.recommendation,
+          psnr: result.psnr,
+          ssim: result.ssim,
+        }),
+      });
+      const data: ExplainResponse = await response.json();
+      setExplanation(data.explanation);
+    } catch (error) {
+      console.error("Explain failed:", error);
+    } finally {
+      setExplainLoading(false);
     }
   };
 
@@ -251,6 +278,23 @@ export default function BenchPage() {
                   </dd>
                 </div>
               </dl>
+
+              <div className="mt-5 pt-5 border-t border-[var(--lab-hairline)]">
+                {!explanation && (
+                  <button
+                    onClick={handleExplain}
+                    disabled={explainLoading}
+                    className="text-sm font-medium underline underline-offset-2 text-[var(--lab-ink)] hover:text-[var(--lab-muted)]"
+                  >
+                    {explainLoading ? "Thinking…" : "Explain this result →"}
+                  </button>
+                )}
+                {explanation && (
+                  <p className="text-sm leading-relaxed text-[var(--lab-muted)]">
+                    {explanation}
+                  </p>
+                )}
+              </div>
             </div>
 
             <div>

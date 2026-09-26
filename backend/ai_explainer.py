@@ -1,11 +1,14 @@
 import os
-import google.generativeai as genai
+import time
+from google import genai
+from google.genai import errors
 from dotenv import load_dotenv
 
 load_dotenv()
 
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-model = genai.GenerativeModel("gemini-2.0-flash")
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+
+MODELS_TO_TRY = ["gemini-flash-latest", "gemini-3.8-flash", "gemini-3.1-flash-lite"]
 
 
 def explain_result(recommendation, psnr, ssim):
@@ -25,5 +28,16 @@ filter makes sense given these numbers. Be specific about the scores.
 Do not repeat the raw numbers back verbatim in a list — write it as
 flowing explanation."""
 
-    response = model.generate_content(prompt)
-    return response.text
+    last_error = None
+    for model_name in MODELS_TO_TRY:
+        for attempt in range(2):
+            try:
+                response = client.models.generate_content(
+                    model=model_name, contents=prompt
+                )
+                return response.text
+            except errors.ServerError as e:
+                last_error = e
+                time.sleep(2)
+                continue
+    raise last_error
