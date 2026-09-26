@@ -9,6 +9,7 @@ const NAV_LINKS = [
   { href: "/bench", label: "Bench" },
   { href: "/filters", label: "Library" },
   { href: "/engine", label: "Engine" },
+  { href: "/about", label: "About" },
 ];
 
 function GithubIcon({ className }: { className?: string }) {
