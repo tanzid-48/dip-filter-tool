@@ -13,30 +13,31 @@ from filters import (
     recommend_filter,
     image_to_base64,
     add_gaussian_noise,
-    add_salt_pepper_noise,
+    add_salt_pepper_noise
 )
+from ai_explainer import explain_result
 
 app = Flask(__name__)
 CORS(app)
 
 
-@app.route("/")
+@app.route('/')
 def home():
     return "Flask server is running!"
 
 
-@app.route("/analyze", methods=["POST"])
+@app.route('/analyze', methods=['POST'])
 def analyze_image():
-    file = request.files["image"]
-    noise_option = request.form.get("noise_type", "none")
+    file = request.files['image']
+    noise_option = request.form.get('noise_type', 'none')
 
     file_bytes = np.frombuffer(file.read(), np.uint8)
     img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
     img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-    if noise_option == "gaussian":
+    if noise_option == 'gaussian':
         working_image = add_gaussian_noise(img_rgb)
-    elif noise_option == "salt_pepper":
+    elif noise_option == 'salt_pepper':
         working_image = add_salt_pepper_noise(img_rgb)
     else:
         working_image = img_rgb
@@ -73,11 +74,25 @@ def analyze_image():
             "laplacian": round(calculate_ssim(img_rgb, laplacian_result), 3),
             "bilateral": round(calculate_ssim(img_rgb, bilateral_result), 3),
         },
-        "recommendation": recommendation,
+        "recommendation": recommendation
     }
 
     return jsonify(response)
 
 
-if __name__ == "__main__":
+@app.route('/explain', methods=['POST'])
+def explain():
+    data = request.get_json()
+    recommendation = data['recommendation']
+    psnr = data['psnr']
+    ssim = data['ssim']
+
+    try:
+        explanation = explain_result(recommendation, psnr, ssim)
+        return jsonify({"explanation": explanation})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+if __name__ == '__main__':
     app.run(debug=True, port=5000, use_reloader=False)
