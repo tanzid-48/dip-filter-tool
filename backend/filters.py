@@ -118,3 +118,43 @@ def apply_laplacian_filter(image):
 
 def apply_bilateral_filter(image):
     return cv2.bilateralFilter(image, d=9, sigmaColor=75, sigmaSpace=75)
+
+
+def apply_lowpass_filter(image, cutoff=30):
+    gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+    f = np.fft.fft2(gray)
+    fshift = np.fft.fftshift(f)
+
+    rows, cols = gray.shape
+    crow, ccol = rows // 2, cols // 2
+
+    mask = np.zeros((rows, cols), np.uint8)
+    cv2.circle(mask, (ccol, crow), cutoff, 1, -1)
+
+    fshift_filtered = fshift * mask
+    f_ishift = np.fft.ifftshift(fshift_filtered)
+    img_back = np.fft.ifft2(f_ishift)
+    img_back = np.abs(img_back)
+
+    result = np.uint8(np.clip(img_back, 0, 255))
+    return cv2.cvtColor(result, cv2.COLOR_GRAY2RGB)
+
+
+def apply_highpass_filter(image, cutoff=30):
+    gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+    f = np.fft.fft2(gray)
+    fshift = np.fft.fftshift(f)
+
+    rows, cols = gray.shape
+    crow, ccol = rows // 2, cols // 2
+
+    mask = np.ones((rows, cols), np.uint8)
+    cv2.circle(mask, (ccol, crow), cutoff, 0, -1)
+
+    fshift_filtered = fshift * mask
+    f_ishift = np.fft.ifftshift(fshift_filtered)
+    img_back = np.fft.ifft2(f_ishift)
+    img_back = np.abs(img_back)
+
+    result = np.uint8(np.clip(img_back, 0, 255))
+    return cv2.cvtColor(result, cv2.COLOR_GRAY2RGB)
