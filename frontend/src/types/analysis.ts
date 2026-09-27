@@ -4,6 +4,8 @@ export interface PsnrResult {
   gaussian: number;
   laplacian: number;
   bilateral: number;
+  lowpass: number;
+  highpass: number;
 }
 
 export interface SsimResult {
@@ -12,6 +14,8 @@ export interface SsimResult {
   gaussian: number;
   laplacian: number;
   bilateral: number;
+  lowpass: number;
+  highpass: number;
 }
 
 export interface ImagesResult {
@@ -22,6 +26,8 @@ export interface ImagesResult {
   gaussian: string;
   laplacian: string;
   bilateral: string;
+  lowpass: string;
+  highpass: string;
 }
 
 export interface RecommendationResult {
@@ -37,6 +43,7 @@ export interface AnalysisResponse {
   ssim: SsimResult;
   recommendation: RecommendationResult;
 }
+
 export interface ExplainResponse {
   explanation: string;
 }

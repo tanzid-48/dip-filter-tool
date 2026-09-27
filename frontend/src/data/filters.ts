@@ -190,7 +190,7 @@ sharpened = np.uint8(np.absolute(laplacian))`,
       },
     ],
   },
-    {
+  {
     slug: "bilateral",
     name: "Bilateral Filter",
     category: "Smoothing",
@@ -230,6 +230,97 @@ sharpened = np.uint8(np.absolute(laplacian))`,
           "Gaussian filter শুধু distance অনুযায়ী weight দেয়, তাই edge-এর দুই পাশের ভিন্ন intensity-র pixel-ও মিশিয়ে ফেলে (blur করে)। Bilateral filter distance-এর সাথে intensity-এর পার্থক্যও বিবেচনা করে — যদি কোনো প্রতিবেশী pixel-এর intensity কেন্দ্র pixel থেকে অনেক আলাদা হয় (edge-এর ওপাশে), তাকে কম weight দেওয়া হয়, ফলে edge অক্ষত থাকে।",
         examAnswer:
           "The Bilateral filter combines a spatial (distance-based) Gaussian weight with a range (intensity-difference-based) Gaussian weight. Pixels that are both spatially close and similar in intensity contribute most, while pixels across an edge — despite being spatially close — have very different intensity and are down-weighted. This prevents smoothing across edges, unlike the standard Gaussian filter.",
+      },
+    ],
+  },
+  {
+    slug: "lowpass",
+    name: "Low-pass Filter (Frequency Domain)",
+    category: "Frequency Domain",
+    tagline: "Removes high-frequency detail using FFT to smooth an image.",
+    overview:
+      "Low-pass Filter spatial domain-এ কাজ না করে ছবিকে প্রথমে FFT (Fast Fourier Transform) দিয়ে frequency domain-এ রূপান্তর করে। সেখানে low frequency (ধীরে পরিবর্তনশীল অংশ, যেমন flat area) রাখা হয় এবং high frequency (দ্রুত পরিবর্তনশীল অংশ, যেমন noise/edge) বাদ দেওয়া হয়, তারপর আবার normal ছবিতে ফিরিয়ে আনা হয়।",
+    howItWorks: [
+      "ছবিতে 2D FFT apply করে frequency domain-এ রূপান্তর করা হয়",
+      "fftshift দিয়ে low frequency-কে center-এ নিয়ে আসা হয়",
+      "center-এ একটা circular mask বসিয়ে শুধু low frequency রাখা হয়, বাকি সব শূন্য করা হয়",
+      "Inverse FFT দিয়ে আবার normal (spatial domain) ছবিতে ফিরিয়ে আনা হয়",
+    ],
+    kernel: [
+      ["0", "0", "0"],
+      ["0", "circle mask", "0"],
+      ["0", "0", "0"],
+    ],
+    formula: "G(u,v) = H(u,v) × F(u,v), where H = 1 inside radius, 0 outside",
+    bestFor: "General smoothing/noise reduction, frequency-based analysis",
+    pros: [
+      "Frequency-based global smoothing — পুরো ছবির noise pattern একসাথে handle করে",
+      "Cutoff radius পরিবর্তন করে smoothing-এর মাত্রা নিয়ন্ত্রণ করা যায়",
+      "Periodic noise (repeating pattern) দূর করতে বিশেষভাবে কার্যকর",
+    ],
+    cons: [
+      "Spatial filter-এর চেয়ে conceptually জটিল, বোঝা কঠিন",
+      "Sharp cutoff ব্যবহার করলে ছবিতে 'ringing artifact' (ঢেউয়ের মতো দাগ) দেখা দিতে পারে",
+      "Computationally FFT/Inverse FFT-এর কারণে ধীর",
+    ],
+    codeSnippet: `f = np.fft.fft2(gray_image)
+fshift = np.fft.fftshift(f)
+mask = circular_mask(low_freq_radius)
+filtered = np.fft.ifft2(np.fft.ifftshift(fshift * mask))`,
+    examQA: [
+      {
+        question:
+          "How does a frequency-domain Low-pass filter differ from a spatial-domain smoothing filter like Mean or Gaussian?",
+        bengaliExplanation:
+          "Mean/Gaussian filter সরাসরি pixel value নিয়ে কাজ করে (spatial domain)। Low-pass filter প্রথমে FFT দিয়ে ছবিকে frequency domain-এ নিয়ে যায়, সেখানে high-frequency component বাদ দেয় (যা noise/edge represent করে), তারপর Inverse FFT দিয়ে আবার ছবিতে ফিরিয়ে আনে। দুটোরই ফলাফল smoothing, কিন্তু পদ্ধতি সম্পূর্ণ ভিন্ন।",
+        examAnswer:
+          "Spatial-domain filters like Mean or Gaussian operate directly on pixel values using a sliding kernel. A frequency-domain Low-pass filter instead transforms the image via FFT, removes high-frequency components (which correspond to noise and edges) using a mask, and reconstructs the image with an inverse FFT. Both achieve smoothing but through fundamentally different mathematical approaches.",
+      },
+    ],
+  },
+  {
+    slug: "highpass",
+    name: "High-pass Filter (Frequency Domain)",
+    category: "Frequency Domain",
+    tagline:
+      "Keeps high-frequency detail using FFT to sharpen or detect edges.",
+    overview:
+      "High-pass Filter Low-pass-এর ঠিক বিপরীত — এটা frequency domain-এ low frequency (flat area) বাদ দিয়ে শুধু high frequency (edge, fine detail, noise) রাখে। ফলাফল একটা edge-enhanced/sharpened ছবি, অনেকটা Laplacian filter-এর মতো কিন্তু frequency-domain পদ্ধতিতে।",
+    howItWorks: [
+      "ছবিতে 2D FFT apply করে frequency domain-এ রূপান্তর করা হয়",
+      "fftshift দিয়ে low frequency-কে center-এ নিয়ে আসা হয়",
+      "center-এর circular অংশ শূন্য করে বাদ দেওয়া হয় (low frequency বাদ), বাকি সব রাখা হয়",
+      "Inverse FFT দিয়ে আবার normal ছবিতে ফিরিয়ে আনা হয়",
+    ],
+    kernel: [
+      ["1", "1", "1"],
+      ["1", "0 (removed)", "1"],
+      ["1", "1", "1"],
+    ],
+    formula: "G(u,v) = H(u,v) × F(u,v), where H = 0 inside radius, 1 outside",
+    bestFor: "Edge detection, sharpening, detail enhancement",
+    pros: [
+      "Edge/fine-detail সরাসরি frequency analysis দিয়ে বের করে",
+      "Cutoff radius দিয়ে কতটুকু detail রাখা হবে নিয়ন্ত্রণ করা যায়",
+      "Frequency-domain analysis-এর educational/research value বেশি",
+    ],
+    cons: [
+      "Noise-কেও high frequency হিসেবে ধরে রাখে/amplify করে (Laplacian-এর মতো একই সীমাবদ্ধতা)",
+      "Output প্রায়ই dark হয় (average brightness/DC component বাদ পড়ে যায়)",
+      "Computationally ধীর, sharp cutoff-এ ringing artifact হতে পারে",
+    ],
+    codeSnippet: `f = np.fft.fft2(gray_image)
+fshift = np.fft.fftshift(f)
+mask = 1 - circular_mask(low_freq_radius)
+filtered = np.fft.ifft2(np.fft.ifftshift(fshift * mask))`,
+    examQA: [
+      {
+        question:
+          "Why does a High-pass filtered image often appear mostly dark with bright edges?",
+        bengaliExplanation:
+          "একটা ছবির average brightness/overall intensity মূলত frequency domain-এর center-এ (zero/low frequency) থাকে — একে বলে DC component। High-pass filter এই center অংশ বাদ দিয়ে দেয়, তাই সামগ্রিক brightness তথ্য হারিয়ে যায় এবং শুধু sudden change (edge)-এর জায়গাগুলোতেই উজ্জ্বল value দেখা যায়, বাকি সব প্রায় কালো/শূন্যের কাছাকাছি হয়ে যায়।",
+        examAnswer:
+          "The average brightness of an image is represented by the zero-frequency (DC) component, located at the center of the frequency spectrum. Since a High-pass filter removes this central low-frequency region, the overall brightness information is discarded, leaving only the regions of rapid intensity change (edges) with significant values — hence the mostly dark appearance with bright edges.",
       },
     ],
   },

@@ -13,7 +13,14 @@ import {
 } from "@/components/ui/select";
 import { AnalysisResponse, ExplainResponse } from "@/types/analysis";
 
-type FilterKey = "mean" | "median" | "gaussian" | "laplacian" | "bilateral";
+type FilterKey =
+  | "mean"
+  | "median"
+  | "gaussian"
+  | "laplacian"
+  | "bilateral"
+  | "lowpass"
+  | "highpass";
 
 const FILTER_LABEL: Record<FilterKey, string> = {
   mean: "Mean",
@@ -21,6 +28,8 @@ const FILTER_LABEL: Record<FilterKey, string> = {
   gaussian: "Gaussian",
   laplacian: "Laplacian",
   bilateral: "Bilateral",
+  lowpass: "Low-pass",
+  highpass: "High-pass",
 };
 
 const PRINT_SHADOW = "shadow-[0_6px_20px_-6px_rgba(0,0,0,0.22)]";
@@ -127,6 +136,18 @@ export default function BenchPage() {
           psnr: result.psnr.bilateral,
           ssim: result.ssim.bilateral,
           image: result.images.bilateral,
+        },
+        {
+          key: "lowpass",
+          psnr: result.psnr.lowpass,
+          ssim: result.ssim.lowpass,
+          image: result.images.lowpass,
+        },
+        {
+          key: "highpass",
+          psnr: result.psnr.highpass,
+          ssim: result.ssim.highpass,
+          image: result.images.highpass,
         },
       ]
     : [];
@@ -335,7 +356,7 @@ export default function BenchPage() {
 
             <div>
               <p className="text-sm text-[var(--lab-muted)] mb-4">Filtered</p>
-              <div className="grid grid-cols-2 lg:grid-cols-5 gap-8">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
                 {filterFrames.map((frame, index) => {
                   const isBest = frame.key === bestKey;
                   return (
