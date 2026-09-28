@@ -84,14 +84,14 @@ export default function HomePage() {
         </motion.div>
 
         <p className="text-sm text-[var(--lab-muted)] leading-relaxed max-w-md pt-4">
-          Upload a photo, add noise on purpose, and watch four filters race to
-          clean it up — scored and ranked by real PSNR.
+          Upload a photo, add noise on purpose, and watch seven filters race to
+          clean it up — scored, ranked, and explained.
         </p>
       </div>
 
       <div className="w-full max-w-md grid grid-cols-3 border-y border-[var(--lab-ink)] py-5">
         <div className="flex flex-col items-center gap-1 border-r border-[var(--lab-hairline)]">
-          <span className="font-mono text-3xl font-bold">04</span>
+          <span className="font-mono text-3xl font-bold">07</span>
           <span className="text-xs text-[var(--lab-muted)]">filters</span>
         </div>
         <div className="flex flex-col items-center gap-1 border-r border-[var(--lab-hairline)]">
@@ -99,12 +99,12 @@ export default function HomePage() {
           <span className="text-xs text-[var(--lab-muted)]">noise types</span>
         </div>
         <div className="flex flex-col items-center gap-1">
-          <span className="font-mono text-3xl font-bold">dB</span>
-          <span className="text-xs text-[var(--lab-muted)]">PSNR scored</span>
+          <span className="font-mono text-3xl font-bold">AI</span>
+          <span className="text-xs text-[var(--lab-muted)]">explained</span>
         </div>
       </div>
 
-      <div className="w-full max-w-2xl grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div className="w-full max-w-4xl grid grid-cols-1 sm:grid-cols-3 gap-6">
         <Link
           href="/bench"
           className="group bg-[var(--lab-surface)] border border-[var(--lab-hairline)] p-7 flex flex-col gap-3 hover:border-[var(--lab-ink)] transition-colors shadow-[0_6px_20px_-6px_rgba(0,0,0,0.15)]"
@@ -112,8 +112,8 @@ export default function HomePage() {
           <span className="font-mono text-xs text-[var(--lab-muted)]">01</span>
           <span className="text-xl font-medium">Filter bench</span>
           <span className="text-sm text-[var(--lab-muted)] leading-relaxed">
-            Upload a photo, add noise on purpose, and run it through Mean,
-            Median, Gaussian, and Laplacian filters.
+            Upload a photo, add noise on purpose, and run it through seven
+            filters — spatial and frequency domain — scored and explained.
           </span>
           <span className="mt-2 text-sm font-medium group-hover:underline">
             Open bench →
@@ -132,6 +132,21 @@ export default function HomePage() {
           </span>
           <span className="mt-2 text-sm font-medium group-hover:underline">
             Open library →
+          </span>
+        </Link>
+
+        <Link
+          href="/engine"
+          className="group bg-[var(--lab-surface)] border border-[var(--lab-hairline)] p-7 flex flex-col gap-3 hover:border-[var(--lab-ink)] transition-colors shadow-[0_6px_20px_-6px_rgba(0,0,0,0.15)]"
+        >
+          <span className="font-mono text-xs text-[var(--lab-muted)]">03</span>
+          <span className="text-xl font-medium">Recommendation engine</span>
+          <span className="text-sm text-[var(--lab-muted)] leading-relaxed">
+            See exactly how the bench measures noise and blur, and how it picks
+            a filter from those numbers.
+          </span>
+          <span className="mt-2 text-sm font-medium group-hover:underline">
+            See how it works →
           </span>
         </Link>
       </div>

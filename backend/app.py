@@ -22,6 +22,8 @@ from ai_explainer import explain_result
 app = Flask(__name__)
 CORS(app)
 
+MAX_DIM = 800
+
 
 @app.route("/")
 def home():
@@ -35,6 +37,20 @@ def analyze_image():
 
     file_bytes = np.frombuffer(file.read(), np.uint8)
     img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+
+    if img is None:
+        return jsonify({"error": "Could not read the uploaded image"}), 400
+
+    # Downscale large uploads to keep memory use and response size manageable
+    h, w = img.shape[:2]
+    if max(h, w) > MAX_DIM:
+        scale = MAX_DIM / max(h, w)
+        img = cv2.resize(
+            img,
+            (int(w * scale), int(h * scale)),
+            interpolation=cv2.INTER_AREA,
+        )
+
     img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     if noise_option == "gaussian":

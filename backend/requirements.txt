@@ -1,0 +1,8 @@
+flask
+flask-cors
+opencv-python-headless
+numpy
+scikit-image
+google-genai
+python-dotenv
+gunicorn
