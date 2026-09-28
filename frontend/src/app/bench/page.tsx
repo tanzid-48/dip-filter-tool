@@ -34,6 +34,8 @@ const FILTER_LABEL: Record<FilterKey, string> = {
 
 const PRINT_SHADOW = "shadow-[0_6px_20px_-6px_rgba(0,0,0,0.22)]";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:5000";
+
 export default function BenchPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -64,7 +66,7 @@ export default function BenchPage() {
     formData.append("noise_type", noiseType);
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/analyze", {
+      const response = await fetch(`${API_URL}/analyze`, {
         method: "POST",
         body: formData,
       });
@@ -82,7 +84,7 @@ export default function BenchPage() {
 
     setExplainLoading(true);
     try {
-      const response = await fetch("http://127.0.0.1:5000/explain", {
+      const response = await fetch(`${API_URL}/explain`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
