@@ -29,7 +29,6 @@ MAX_DIM = 800
 def home():
     return "Flask server is running!"
 
-
 @app.route("/analyze", methods=["POST"])
 def analyze_image():
     file = request.files["image"]
@@ -41,7 +40,6 @@ def analyze_image():
     if img is None:
         return jsonify({"error": "Could not read the uploaded image"}), 400
 
-    # Downscale large uploads to keep memory use and response size manageable
     h, w = img.shape[:2]
     if max(h, w) > MAX_DIM:
         scale = MAX_DIM / max(h, w)
